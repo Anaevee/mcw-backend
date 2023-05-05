@@ -1,15 +1,27 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import express from "express";
+import userRouter from "./routes/user.routes";
+import cors from "cors";
 
-dotenv.config();
+const app = express();
+app.use(express.json());
 
-const app: Express = express();
-const port = process.env.PORT;
+const PORT = 8532;
 
-app.get('/ping', (_req: Request, res: Response) => {
-  res.send('Pong!');
+const allowedOrigins = ["http://localhost:4200"];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins,
+};
+
+app.use(cors(options));
+app.get("/ping", (_req, res) => {
+  console.log("se ha hecho ping");
+  const MESSAGE: string = "Pong";
+  res.send(MESSAGE);
 });
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+app.use("/api/users", userRouter);
+
+app.listen(PORT, () => {
+  console.log(`servidor escuchado en el puerto ${PORT} `);
 });
